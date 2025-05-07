@@ -1,4 +1,4 @@
-# The Blog
+# TheNextBlog
 📚 Uma aplicação web projetada para facilitar a criação e exibição de posts com eficiência e estilo. Este projeto combina tecnologias modernas para oferecer uma experiência otimizada e elegante.
 
 ## ✨ Funcionalidades
