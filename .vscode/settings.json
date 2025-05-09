@@ -10,8 +10,12 @@
 
   "code-runner.ignoreSelection": true,
   "code-runner.executorMap": {
-    "typescript": "cls && npx tsx",
+    "typescript": "cls && npx tsx"
   },
+
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
 
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
