@@ -3,13 +3,13 @@ import Link from 'next/link';
 
 type PostHeadingProps = {
   children: React.ReactNode;
-  url: string;
+  href: string;
   as?: 'h1' | 'h2';
 };
 
 export function PostHeading({
   children,
-  url,
+  href,
   as: Tag = 'h2',
 }: PostHeadingProps) {
   const headingClassesMap = {
@@ -19,7 +19,7 @@ export function PostHeading({
 
   return (
     <Tag className={headingClassesMap[Tag]}>
-      <Link href={url}>{children}</Link>
+      <Link href={href}>{children}</Link>
     </Tag>
   );
 }
