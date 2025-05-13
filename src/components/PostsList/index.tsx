@@ -10,11 +10,13 @@ export async function PostsList() {
   return (
     <div className={clsx('gap-8', 'grid grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3')}>
       {posts.map(post => {
+        const postLink = `/post/${post.slug}`;
+
         return (
           <div className={clsx('flex flex-col', 'gap-8', 'group')} key={post.id}>
             <PostImageCover
               linkProps={{
-                href: `/post/${post.slug}`,
+                href: postLink,
               }}
               imageProps={{
                 src: post.coverImageUrl,
@@ -33,7 +35,7 @@ export async function PostsList() {
                 {post.createdAt}
               </time>
 
-              <PostHeading href='#' as='h2'>
+              <PostHeading href={postLink} as='h2'>
                 {post.title}
               </PostHeading>
 
