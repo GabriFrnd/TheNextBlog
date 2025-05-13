@@ -2,6 +2,8 @@ import { postRepository } from '@/repositories/post';
 import { PostImageCover } from '../PostImageCover';
 
 import { PostHeading } from '../PostHeading';
+import { formatDatetime, formatRelativeDate } from '@/utils/format-datetime';
+
 import clsx from 'clsx';
 
 export async function PostsList() {
@@ -31,8 +33,9 @@ export async function PostsList() {
               <time
                 className={clsx('block', 'text-slate-600 text-sm/tight')}
                 dateTime={post.createdAt}
+                title={formatRelativeDate(post.createdAt)}
               >
-                {post.createdAt}
+                {formatDatetime(post.createdAt)}
               </time>
 
               <PostHeading href={postLink} as='h2'>
