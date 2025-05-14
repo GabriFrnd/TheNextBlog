@@ -1,10 +1,13 @@
 import { PostImageCover } from '../PostImageCover';
 import { PostSummary } from '../PostSummary';
+
+import { findAllPublicPosts } from '@/lib/post/queries';
 import clsx from 'clsx';
 
-export function FeaturedPost() {
-  const slug = 'qualquer coisa';
-  const postLink = `/post/${slug}`;
+export async function FeaturedPost() {
+  const posts = await findAllPublicPosts();
+  const post = posts[0];
+  const postLink = `/post/${post.slug}`;
 
   return (
     <section
@@ -20,20 +23,20 @@ export function FeaturedPost() {
           href: postLink,
         }}
         imageProps={{
-          src: '/images/bryen_9.png',
+          src: post.coverImageUrl,
           height: 720,
           width: 1200,
           priority: true,
-          alt: 'Imagem do post',
+          alt: post.title,
         }}
       />
 
       <PostSummary
-        createdAt={'2025-04-08T00:24:38.616Z'}
+        createdAt={post.createdAt}
         postLink={postLink}
         postHeading='h1'
-        title={'Olha a rotina matinal de pessoas altamente eficazes'}
-        excerpt={'O Next.js também é uma boa escolha para quem quer se preocupar com performance e SEO.'}
+        title={post.title}
+        excerpt={post.excerpt}
       />
     </section>
   );
