@@ -13,7 +13,7 @@ export function Header() {
           'xl:py-13 xl:text-7xl/snug',
         )}
       >
-        <Link href='#'>The Blog</Link>
+        <Link href='/'>The Blog</Link>
       </h1>
     </header>
   );
