@@ -1,5 +1,11 @@
+import { SinglePost } from '@/components/SinglePost';
+import { SpinLoader } from '@/components/SpinLoader';
+
 import { findPostBySlug } from '@/lib/post/queries';
 import { Metadata } from 'next';
+
+import { Suspense } from 'react';
+import clsx from 'clsx';
 
 type PostSlugPageProps = {
   /* 'params', por padrão, é uma Promise */
@@ -20,11 +26,10 @@ export async function generateMetadata({
 
 export default async function PostSlugPage({ params }: PostSlugPageProps) {
   const { slug } = await params; /* 'slug' vem dentro de 'params' */
-  const post = await findPostBySlug(slug);
 
   return (
-    <div>
-      <p>{post?.title}</p>
-    </div>
+    <Suspense fallback={<SpinLoader className={clsx('min-h-20', 'mb-5')} />}>
+      <SinglePost slug={slug} />
+    </Suspense>
   );
 }
