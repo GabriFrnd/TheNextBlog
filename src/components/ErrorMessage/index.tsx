@@ -1,3 +1,4 @@
+'use client'; /* Automaticamente, virou 'client component' por conta do 'error.tsx' */
 import clsx from 'clsx';
 
 type ErrorMessageProps = {
