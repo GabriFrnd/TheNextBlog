@@ -4,50 +4,36 @@ import { PostRepository } from './post-repository';
 import { resolve } from 'path';
 import { readFile } from 'fs/promises';
 
-const ROOT_DIR = process.cwd(); /* Caminho da raiz do projeto */
-const JSON_POSTS_FILE_PATH = resolve(
-  ROOT_DIR,
-  'src',
-  'db',
-  'seed',
-  'posts.json',
-); /* Caminho para o arquivo 'posts.json' */
+import { SIMULATE } from '@/lib/constants';
+import { asyncDelay } from '@/utils/async-delay';
 
-const SIMULATE = 0;
+const ROOT_DIR = process.cwd(); /* Caminho da raiz do projeto */
+const JSON_POSTS_FILE_PATH = resolve(ROOT_DIR, 'src', 'db', 'seed', 'posts.json'); /* Caminho para o arquivo 'posts.json' */
 
 export class JsonPostRepository implements PostRepository {
-  private async simulateWait() {
-    if (SIMULATE <= 0) return;
-    await new Promise(resolve => setTimeout(resolve, SIMULATE));
-  }
-
-  private async readFromDisk(): Promise<PostModel[]> {
-    /* Método privado para leitura de arquivo 'posts.json' */
+  private async readFromDisk(): Promise<PostModel[]> { /* Método privado para leitura de arquivo 'posts.json' */
     const jsonContent = await readFile(JSON_POSTS_FILE_PATH, 'utf-8');
     const parsedJson = JSON.parse(jsonContent);
-    const { posts } = parsedJson;
 
+    const { posts } = parsedJson;
     return posts;
   }
 
-  async findAllPublic(): Promise<PostModel[]> {
-    /* Método que retorna todos os posts (array) com published = true */
-    await this.simulateWait();
+  async findAllPublic(): Promise<PostModel[]> { /* Método que retorna todos os posts (array) com published = true */
+    await asyncDelay(SIMULATE); /* Função para delay */
     const posts = await this.readFromDisk();
 
     return posts.filter(post => post.published);
   }
 
-  async findAll(): Promise<PostModel[]> {
-    /* Método que retorna posts (array), mesmo que não estejam com published = true */
-    await this.simulateWait();
+  async findAll(): Promise<PostModel[]> {  /* Método que retorna posts (array), mesmo que não estejam com published = true */
+    await asyncDelay(SIMULATE); /* Função para delay */
     const posts = await this.readFromDisk();
 
     return posts;
   }
 
-  async findById(id: string): Promise<PostModel> {
-    /* Método que retorna apenas um post baseado no ID */
+  async findById(id: string): Promise<PostModel> { /* Método que retorna apenas um post baseado no ID */
     const posts = await this.findAllPublic();
     const post = posts.find(post => post.id === id);
 
@@ -55,8 +41,7 @@ export class JsonPostRepository implements PostRepository {
     return post;
   }
 
-  async findBySlugPublic(slug: string): Promise<PostModel> {
-    /* Método que retorna apenas um post baseado no 'slug' */
+  async findBySlugPublic(slug: string): Promise<PostModel> { /* Método que retorna apenas um post baseado no 'slug' */
     const posts = await this.findAllPublic();
     const post = posts.find(post => post.slug === slug);
 
