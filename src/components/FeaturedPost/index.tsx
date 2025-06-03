@@ -1,7 +1,7 @@
 import { PostImageCover } from '../PostImageCover';
 import { PostSummary } from '../PostSummary';
 
-import { findAllPublicPosts } from '@/lib/post/queries';
+import { findAllPublicPosts } from '@/lib/post/queries/public';
 import clsx from 'clsx';
 
 export async function FeaturedPost() {

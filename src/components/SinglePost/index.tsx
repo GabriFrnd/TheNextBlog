@@ -1,4 +1,4 @@
-import { findPostBySlug } from '@/lib/post/queries';
+import { findPublicPostBySlug } from '@/lib/post/queries/public';
 import { PostHeading } from '../PostHeading';
 
 import { PostDate } from '../PostDate';
@@ -12,7 +12,7 @@ type SinglePostProps = {
 };
 
 export async function SinglePost({ slug }: SinglePostProps) {
-  const post = await findPostBySlug(slug);
+  const post = await findPublicPostBySlug(slug);
 
   return (
     <article className={clsx('mb-16')}>
