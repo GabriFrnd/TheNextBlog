@@ -4,28 +4,17 @@ import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
-export const findAllPublicPosts = unstable_cache(
-  cache(async () => {
+export const findAllPublicPosts = cache(unstable_cache(
+  async () => {
     return await postRepository.findAllPublic();
-  }),
-  ['posts'],
-  {
-    tags: ['posts'],
-  },
-);
+  }, ['posts'], { tags: ['posts'] }
+));
 
-export const findPublicPostBySlug = (slug: string) =>
-  unstable_cache(
-    cache(async (slug: string) => {
-      const post = await postRepository
-        .findBySlugPublic(slug)
-        .catch(() => undefined);
-      if (!post) notFound();
+export const findPublicPostBySlug = cache((slug: string) => {
+  return unstable_cache(async (slug: string) => {
+    const post = await postRepository.findBySlugPublic(slug).catch(() => undefined);
+    if (!post) notFound();
 
-      return post;
-    }),
-    ['posts'],
-    {
-      tags: [`post-${slug}`],
-    },
-  )(slug);
+    return post;
+  }, [`post-${slug}`], { tags: [`post-${slug}`] })(slug);
+});
