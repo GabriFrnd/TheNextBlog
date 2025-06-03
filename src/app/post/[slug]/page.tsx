@@ -7,6 +7,8 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import clsx from 'clsx';
 
+export const dynamic = 'force-static'; /* Rota estática */
+
 type PostSlugPageProps = {
   /* 'params', por padrão, é uma Promise */
   params: Promise<{ slug: string }> /* slug: nome da pasta */;

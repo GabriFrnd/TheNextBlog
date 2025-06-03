@@ -5,6 +5,7 @@ import { SpinLoader } from '@/components/SpinLoader';
 import { Suspense } from 'react';
 
 import clsx from 'clsx';
+export const dynamic = 'force-static'; /* Rota estática */
 
 export default async function HomePage() {
   return (
