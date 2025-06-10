@@ -2,10 +2,21 @@ import { PostImageCover } from '../PostImageCover';
 import { PostSummary } from '../PostSummary';
 
 import { findAllPublicPosts } from '@/lib/post/queries/public';
+import ErrorMessage from '../ErrorMessage';
+
 import clsx from 'clsx';
 
 export async function FeaturedPost() {
   const posts = await findAllPublicPosts();
+  
+  if (posts.length <= 0)
+    return (
+      <ErrorMessage
+        contentTitle='Houve um imprevisto!'
+        content='Ainda não há posts.'
+      />
+    );
+
   const post = posts[0];
   const postLink = `/post/${post.slug}`;
 

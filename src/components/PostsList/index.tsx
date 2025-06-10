@@ -6,6 +6,7 @@ import clsx from 'clsx';
 
 export async function PostsList() {
   const posts = await findAllPublicPosts();
+  if (posts.length <= 1) return null;
 
   return (
     <div
