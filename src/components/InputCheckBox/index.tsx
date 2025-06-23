@@ -14,6 +14,7 @@ export function InputCheckBox({ label = '', type = 'checkbox', ...props }: Input
       <input
         {...props}
         className={clsx(
+          'cursor-pointer',
           'focus:ring-blue-600 focus:ring-2',
           'h-4 w-4',
           'outline-none',
@@ -23,7 +24,7 @@ export function InputCheckBox({ label = '', type = 'checkbox', ...props }: Input
         type={type}
       />
 
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && <label className={clsx('cursor-pointer')} htmlFor={id}>{label}</label>}
     </div>
   );
 }
