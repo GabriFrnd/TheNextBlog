@@ -6,7 +6,11 @@ type InputCheckBoxProps = {
   type?: 'checkbox';
 } & React.ComponentProps<'input'>;
 
-export function InputCheckBox({ label = '', type = 'checkbox', ...props }: InputCheckBoxProps) {
+export function InputCheckBox({
+  label = '',
+  type = 'checkbox',
+  ...props
+}: InputCheckBoxProps) {
   const id = useId(); /* Gerador de ID único */
 
   return (
@@ -18,13 +22,17 @@ export function InputCheckBox({ label = '', type = 'checkbox', ...props }: Input
           'focus:ring-blue-600 focus:ring-2',
           'h-4 w-4',
           'outline-none',
-          props.className
+          props.className,
         )}
         id={id}
         type={type}
       />
 
-      {label && <label className={clsx('cursor-pointer')} htmlFor={id}>{label}</label>}
+      {label && (
+        <label className={clsx('cursor-pointer')} htmlFor={id}>
+          <b>{label}</b>
+        </label>
+      )}
     </div>
   );
 }

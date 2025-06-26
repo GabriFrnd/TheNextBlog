@@ -13,7 +13,7 @@ const MDEditor = dynamic(() => import('@uiw/react-md-editor'), {
 });
 
 type MarkdownEditorProps = {
-  labelText?: string;
+  label?: string;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   textAreaName: string;
@@ -21,7 +21,7 @@ type MarkdownEditorProps = {
 };
 
 export function MarkdownEditor({
-  labelText = '',
+  label = '',
   value,
   setValue,
   textAreaName,
@@ -31,9 +31,9 @@ export function MarkdownEditor({
 
   return (
     <div className={clsx('flex flex-col', 'gap-2')}>
-      {labelText && (
-        <label className={clsx('text-sm')} htmlFor={id}>
-          {labelText}
+      {label && (
+        <label htmlFor={id}>
+          <b>{label}</b>
         </label>
       )}
 

@@ -10,7 +10,11 @@ export function InputText({ label = '', ...props }: InputTextProps) {
 
   return (
     <div className={clsx('flex flex-col', 'gap-2')}>
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && (
+        <label htmlFor={id}>
+          <b>{label}</b>
+        </label>
+      )}
 
       <input
         {...props}
