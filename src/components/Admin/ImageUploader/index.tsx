@@ -11,7 +11,11 @@ import { uploadImageAction } from '@/actions/upload/upload-image-action';
 
 import clsx from 'clsx';
 
-export function ImageUploader() {
+type ImageUploaderProps = {
+  disabled?: boolean;
+};
+
+export function ImageUploader({ disabled = false }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, startTransition] = useTransition();
   const [imageUrl, setImageUrl] = useState('');
@@ -72,7 +76,7 @@ export function ImageUploader() {
 
   return (
     <div className={clsx('flex flex-col', 'gap-4 py-4')}>
-      <Button className={clsx('self-start')} type='button' onClick={handleChooseFile} disabled={isUploading}>
+      <Button className={clsx('self-start')} type='button' onClick={handleChooseFile} disabled={isUploading || disabled}>
         <ImageUpIcon />
         Enviar Imagem
       </Button>
@@ -95,7 +99,7 @@ export function ImageUploader() {
         accept='image/*'
         ref={fileInputRef}
         onChange={handleChange}
-        disabled={isUploading}
+        disabled={isUploading || disabled}
       />
     </div>
   );
