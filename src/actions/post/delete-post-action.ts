@@ -1,16 +1,10 @@
 'use server';
 
-import { drizzleDataBase } from '@/db/drizzle';
-import { postsTable } from '@/db/drizzle/schemas';
-
 import { postRepository } from '@/repositories/post';
-import { asyncDelay } from '@/utils/async-delay';
-
-import { eq } from 'drizzle-orm';
 import { revalidateTag } from 'next/cache';
 
 export async function deletePostAction(id: string) {
-  await asyncDelay(2000);
+  let post;
 
   if (!id || typeof id !== 'string') {
     return {
@@ -18,15 +12,19 @@ export async function deletePostAction(id: string) {
     };
   }
 
-  const post = await postRepository.findById(id).catch(() => undefined);
+  try {
+    post = await postRepository.delete(id);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return {
+        error: error.message,
+      }
+    }
 
-  if (!post) {
     return {
-      error: 'O post não existe.',
-    };
+      error: 'Erro desconhecido.',
+    }
   }
-
-  await drizzleDataBase.delete(postsTable).where(eq(postsTable.id, id));
 
   revalidateTag('posts');
   revalidateTag(`post-${post.slug}`);
