@@ -1,8 +1,17 @@
 import { PostModel } from '@/models/post/post-model';
 
 export interface PostRepository {
-  findAllPublic(): Promise<PostModel[]> /* Método que retorna todos os posts (array) com published = true */;
-  findBySlugPublic(slug: string): Promise<PostModel> /* Método que retorna apenas um post baseado no 'slug' */;
-  findAll(): Promise<PostModel[]> /* Método que retorna posts (array), mesmo que não estejam com published = true */;
-  findById(id: string): Promise<PostModel> /* Método que retorna apenas um post baseado no ID */;
+  findAllPublic(): Promise<PostModel[]>;
+  findBySlugPublic(slug: string): Promise<PostModel>;
+
+  findAll(): Promise<PostModel[]>;
+  findById(id: string): Promise<PostModel>;
+
+  create(post: PostModel): Promise<PostModel>;
+  delete(id: string): Promise<PostModel>;
+
+  update(
+    id: string,
+    newPostData: Omit<PostModel, 'id' | 'slug' | 'createdAt' | 'updatedAt'>,
+  ): Promise<PostModel>;
 }
