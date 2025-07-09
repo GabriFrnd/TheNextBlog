@@ -4,11 +4,9 @@ import { Button } from '@/components/Button';
 import { ImageUpIcon } from 'lucide-react';
 
 import { useRef, useState, useTransition } from 'react';
-import { IMAGE_UPLOADER_MAX_SIZE } from '@/lib/constants';
-
 import { toast } from 'react-toastify';
-import { uploadImageAction } from '@/actions/upload/upload-image-action';
 
+import { uploadImageAction } from '@/actions/upload/upload-image-action';
 import clsx from 'clsx';
 
 type ImageUploaderProps = {
@@ -32,7 +30,9 @@ export function ImageUploader({ disabled = false }: ImageUploaderProps) {
 
     const fileInput = fileInputRef.current;
     const file = fileInput?.files?.[0];
+
     const formData = new FormData();
+    const uploadMaxSize = Number(process.env.NEXT_PUBLIC_IMAGE_UPLOADER_MAX_SIZE) || 921600;
 
     if (!fileInput) {
       setImageUrl('');
@@ -44,8 +44,8 @@ export function ImageUploader({ disabled = false }: ImageUploaderProps) {
       return;
     }
 
-    if (file.size > IMAGE_UPLOADER_MAX_SIZE) {
-      const maxSize = IMAGE_UPLOADER_MAX_SIZE / 1024;
+    if (file.size > uploadMaxSize) {
+      const maxSize = (uploadMaxSize / 1024).toFixed(2);
       toast.error(`Imagem grande. Tamanho máximo permitido: ${maxSize} KB.`);
 
       fileInput.value = '';

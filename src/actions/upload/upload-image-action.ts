@@ -1,6 +1,5 @@
 'use server';
 
-import { IMAGE_SERVER_URL, IMAGE_UPLOAD_DIRECTORY, IMAGE_UPLOADER_MAX_SIZE } from '@/lib/constants';
 import { mkdir, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
 
@@ -13,6 +12,11 @@ export async function uploadImageAction(formData: FormData): Promise<uploadImage
   const makeResult = ({ url = '', error = '' }) => ({ url, error });
   const file = formData.get('file');
 
+  const uploadMaxSize = Number(process.env.NEXT_PUBLIC_IMAGE_UPLOADER_MAX_SIZE) || 921600;
+  const uploadDirectory = process.env.IMAGE_UPLOAD_DIRECTORY || 'uploads';
+
+  const imageServerUrl = process.env.IMAGE_SERVER_URL || 'http://localhost:3000/uploads';
+
   if (!(formData instanceof FormData)) {
     return makeResult({ error: 'Dados inválidos.' });
   }
@@ -21,8 +25,8 @@ export async function uploadImageAction(formData: FormData): Promise<uploadImage
     return makeResult({ error: 'Arquivo inválido.' });
   }
 
-  if (file.size > IMAGE_UPLOADER_MAX_SIZE) {
-    const maxSize = IMAGE_UPLOADER_MAX_SIZE / 1024;
+  if (file.size > uploadMaxSize) {
+    const maxSize = uploadMaxSize / 1024;
     return makeResult({ error: `Imagem grande. Tamanho máximo permitido: ${maxSize} KB.` });
   }
 
@@ -33,7 +37,7 @@ export async function uploadImageAction(formData: FormData): Promise<uploadImage
   const imageExtension = extname(file.name);
   const uniqueImageName = `${Date.now()}${imageExtension}`;
 
-  const uploadFullPath = resolve(process.cwd(), 'public', IMAGE_UPLOAD_DIRECTORY);
+  const uploadFullPath = resolve(process.cwd(), 'public', uploadDirectory);
   await mkdir(uploadFullPath, { recursive: true });
 
   const fileArrayBuffer = await file.arrayBuffer();
@@ -42,6 +46,6 @@ export async function uploadImageAction(formData: FormData): Promise<uploadImage
   const fileFullPath = resolve(uploadFullPath, uniqueImageName);
   await writeFile(fileFullPath, buffer);
 
-  const url = `${IMAGE_SERVER_URL}/${uniqueImageName}`;
+  const url = `${imageServerUrl}/${uniqueImageName}`;
   return makeResult({ url });
 }
