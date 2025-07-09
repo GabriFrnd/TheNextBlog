@@ -2,16 +2,13 @@ import { PostModel } from '@/models/post/post-model';
 import { PostRepository } from './post-repository';
 
 import { resolve } from 'path';
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 
-import { SIMULATE } from '@/lib/constants';
-import { asyncDelay } from '@/utils/async-delay';
-
-const ROOT_DIR = process.cwd(); /* Caminho da raiz do projeto */
-const JSON_POSTS_FILE_PATH = resolve(ROOT_DIR, 'src', 'db', 'seed', 'posts.json'); /* Caminho para o arquivo 'posts.json' */
+const ROOT_DIR = process.cwd();
+const JSON_POSTS_FILE_PATH = resolve(ROOT_DIR, 'src', 'db', 'seed', 'posts.json');
 
 export class JsonPostRepository implements PostRepository {
-  private async readFromDisk(): Promise<PostModel[]> { /* Método privado para leitura de arquivo 'posts.json' */
+  private async readFromDisk(): Promise<PostModel[]> {
     const jsonContent = await readFile(JSON_POSTS_FILE_PATH, 'utf-8');
     const parsedJson = JSON.parse(jsonContent);
 
@@ -19,21 +16,22 @@ export class JsonPostRepository implements PostRepository {
     return posts;
   }
 
-  async findAllPublic(): Promise<PostModel[]> { /* Método que retorna todos os posts (array) com published = true */
-    await asyncDelay(SIMULATE); /* Função para delay */
-    const posts = await this.readFromDisk();
+  private async writeToDisk(posts: PostModel[]): Promise<void> {
+    const jsonToString = JSON.stringify({ posts }, null, 2);
+    await writeFile(JSON_POSTS_FILE_PATH, jsonToString, 'utf-8');
+  }
 
+  async findAllPublic(): Promise<PostModel[]> {
+    const posts = await this.readFromDisk();
     return posts.filter(post => post.published);
   }
 
-  async findAll(): Promise<PostModel[]> {  /* Método que retorna posts (array), mesmo que não estejam com published = true */
-    await asyncDelay(SIMULATE); /* Função para delay */
+  async findAll(): Promise<PostModel[]> {
     const posts = await this.readFromDisk();
-
     return posts;
   }
 
-  async findById(id: string): Promise<PostModel> { /* Método que retorna apenas um post baseado no ID */
+  async findById(id: string): Promise<PostModel> {
     const posts = await this.findAllPublic();
     const post = posts.find(post => post.id === id);
 
@@ -41,11 +39,69 @@ export class JsonPostRepository implements PostRepository {
     return post;
   }
 
-  async findBySlugPublic(slug: string): Promise<PostModel> { /* Método que retorna apenas um post baseado no 'slug' */
+  async findBySlugPublic(slug: string): Promise<PostModel> {
     const posts = await this.findAllPublic();
     const post = posts.find(post => post.slug === slug);
 
     if (!post) throw new Error('Post não encontrado.');
     return post;
+  }
+
+  async create(post: PostModel): Promise<PostModel> {
+    const posts = await this.findAll();
+
+    if (!post.id || !post.slug) {
+      throw new Error('Post sem ID ou slug.');
+    }
+
+    const idOrSlugExist = posts.find(
+      savedPost => savedPost.id === post.id || savedPost.slug === post.slug,
+    );
+
+    if (idOrSlugExist) {
+      throw new Error('ID ou slug devem ser únicos.');
+    }
+
+    posts.push(post);
+    await this.writeToDisk(posts);
+
+    return post;
+  }
+
+  async delete(id: string): Promise<PostModel> {
+    const posts = await this.findAll();
+    const postIndex = posts.findIndex(p => p.id === id);
+
+    if (postIndex < 0) {
+      throw new Error('O post não existe.');
+    }
+
+    const post = posts[postIndex];
+    posts.splice(postIndex, 1);
+
+    await this.writeToDisk(posts);
+    return post;
+  }
+
+  async update(
+    id: string,
+    newPostData: Omit<PostModel, 'id' | 'slug' | 'createdAt' | 'updatedAt'>,
+  ): Promise<PostModel> {
+    const posts = await this.findAll();
+    const postIndex = posts.findIndex(p => p.id === id);
+    const savedPost = posts[postIndex];
+
+    if (postIndex < 0) {
+      throw new Error('O post não existe.');
+    }
+
+    const newPost = {
+      ...savedPost,
+      ...newPostData,
+      updatedAt: new Date().toISOString(),
+    };
+    posts[postIndex] = newPost;
+    await this.writeToDisk(posts);
+    return newPost;
   }
 }
