@@ -1,5 +1,6 @@
 'use server';
 
+import { verifyLoginSession } from '@/lib/login/manage-login';
 import { mkdir, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
 
@@ -10,6 +11,12 @@ type uploadImageActionResult = {
 
 export async function uploadImageAction(formData: FormData): Promise<uploadImageActionResult> {
   const makeResult = ({ url = '', error = '' }) => ({ url, error });
+  const isAuthenticated = await verifyLoginSession();
+
+  if (!isAuthenticated) {
+    return makeResult({ error: 'Faça login novamente.' });
+  }
+
   const file = formData.get('file');
 
   const uploadMaxSize = Number(process.env.NEXT_PUBLIC_IMAGE_UPLOADER_MAX_SIZE) || 921600;
