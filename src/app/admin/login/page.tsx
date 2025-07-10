@@ -1,5 +1,24 @@
+import { LoginForm } from '@/components/Admin/LoginForm';
+import ErrorMessage from '@/components/ErrorMessage';
+import { Metadata } from 'next';
+
 export const dynamic = 'force-dynamic'; /* Rota dinâmica */
 
+export const metadata: Metadata = {
+  title: 'Login',
+};
+
 export default async function AdminLoginPage() {
-  return <div>Admin: login page</div>;
+  const allowLogin = Boolean(Number(process.env.ALLOW_LOGIN));
+
+  if (!allowLogin) {
+    return (
+      <ErrorMessage
+        contentTitle='403'
+        content='Libere o sistema de login antes de acessar o sistema.'
+      />
+    );
+  }
+
+  return <LoginForm />;
 }
